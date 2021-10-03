@@ -1,4 +1,5 @@
 import numpy as np
+import copy
 
 
 class Optimizer:
@@ -42,14 +43,13 @@ class Momentum(Optimizer):
             layer.weights -= self.w_velocities[index]
             layer.biases -= self.b_velocities[index]
 
+"""
+Adaptive momemtum optimizer
+https://arxiv.org/pdf/1412.6980.pdf
+https://habr.com/ru/post/318970/
+"""
 
 class Adam(Optimizer):
-    """
-    Adaptive momemtum optimizer
-    https://arxiv.org/pdf/1412.6980.pdf
-    https://habr.com/ru/post/318970/
-    """
-
     def __init__(self, params, learning_rate, betas=(0.9, 0.999), eps=1e-8):
         super().__init__(params, learning_rate)
         self.model_params = params
@@ -57,15 +57,12 @@ class Adam(Optimizer):
         self.betas = betas
         self.eps = eps
 
-        self.w_m = {i: np.zeros_like(self.model_params[i].weights) for i in
-                    range(len(self.model_params))}
-        self.b_m = {i: np.zeros_like(self.model_params[i].biases) for i in
-                    range(len(self.model_params))}
+        params_len = len(self.model_params)
 
-        self.w_v = {i: np.zeros_like(self.model_params[i].weights) for i in
-                    range(len(self.model_params))}
-        self.b_v = {i: np.zeros_like(self.model_params[i].biases) for i in
-                    range(len(self.model_params))}
+        self.w_m = {i: np.zeros_like(self.model_params[i].weights) for i in range(params_len)}
+        self.b_m = {i: np.zeros_like(self.model_params[i].biases) for i in range(params_len)}
+        self.w_v = copy.deepcopy(self.w_m)
+        self.b_v = copy.deepcopy(self.b_m)
 
     def action(self, iter_num):
         for index, layer in enumerate(self.model_params):

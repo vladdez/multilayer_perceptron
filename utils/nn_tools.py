@@ -27,30 +27,30 @@ def split_to_train_val(x, y):
     return X_train, y_train, X_val, y_val
 
 
-def init_weights(params, weights_method: str = 'xavier_normal', biases_method: str = 'ones'):
+def init_weights(params, w_method: str = 'xavier_normal', b_method: str = 'ones'):
     for layer in params:
-        if weights_method == 'zeros':
+        if w_method == 'zeros':
             layer.weights = np.zeros(layer.w_shape)
-        elif weights_method == 'normal':
+        elif w_method == 'normal':
             layer.weights = np.random.normal(loc=0., scale=1., size=layer.w_shape)
-        elif weights_method == 'xavier_normal':
+        elif w_method == 'xavier_normal':
             layer.weights = np.random.normal(loc=0., scale=(np.sqrt(layer.w_shape[0])), size=layer.w_shape)
-        elif weights_method == 'kaiming_normal':
+        elif w_method == 'kaiming_normal':
             layer.weights = np.random.normal(loc=0., scale=(np.sqrt(2 / layer.w_shape[0])), size=layer.w_shape)
         else:
             raise NotImplementedError
 
-        if biases_method == 'zeros':
+        if b_method == 'zeros':
             layer.biases = np.zeros(layer.b_shape)
-        elif biases_method == 'ones':
+        elif b_method == 'ones':
             layer.biases = np.ones(layer.b_shape)
-        elif biases_method == 'normal':
+        elif b_method == 'normal':
             layer.biases = np.random.normal(loc=0., scale=1., size=layer.b_shape)
         else:
             raise NotImplementedError
 
 
-def nn_confusion_matrix(y_true, y_pred, mode: str = 'matrix'):
+def confusion_matrix(y_true, y_pred, mode: str = 'matrix'):
     y_pred = y_pred.astype(int)
     unique_classes = np.unique(y_true)
     if y_true.shape != y_pred.shape:
@@ -75,25 +75,25 @@ def nn_confusion_matrix(y_true, y_pred, mode: str = 'matrix'):
     return conf
 
 
-def nn_accuracy_score(y_true, y_pred):
+def accuracy_score(y_true, y_pred):
     return np.mean(y_true == y_pred)
 
 
-def nn_precision_score(y_true, y_pred):
-    conf, conf_dict = nn_confusion_matrix(y_true, y_pred, mode='all')
+def precision_score(y_true, y_pred):
+    conf, conf_dict = confusion_matrix(y_true, y_pred, mode='all')
     tp, tn, fp, fn = conf_dict[0]
     return tp / (tp + fp + 0.0001)
 
 
-def nn_recall_score(y_true, y_pred):
-    conf, conf_dict = nn_confusion_matrix(y_true, y_pred, mode='all')
+def recall_score(y_true, y_pred):
+    conf, conf_dict = confusion_matrix(y_true, y_pred, mode='all')
     tp, tn, fp, fn = conf_dict[0]
     return tp / (tp + fn + 0.0001)
 
 
-def nn_f1_score(y_true: np.ndarray, y_pred: np.ndarray):
-    prec = nn_precision_score(y_true, y_pred)
-    rec = nn_recall_score(y_true, y_pred)
+def f1_score(y_true: np.ndarray, y_pred: np.ndarray):
+    prec = precision_score(y_true, y_pred)
+    rec = recall_score(y_true, y_pred)
     f1 = (2 * prec * rec) / (prec + rec + 0.0001)
     return f1
 
@@ -102,17 +102,17 @@ class EarlyStopping:
     def __init__(self, esr: int = 5):
         self.esr = esr
         self.current_esr = 0
-        self.loss_list = []
+        self.loss_hist = []
 
     def add_loss(self, loss: float):
-        self.loss_list.append(loss)
+        self.loss_hist.append(loss)
 
     def check_stop_training(self):
         if self.current_esr > self.esr:
-            print(f'Current early stopping rate bigger than {self.esr}. Stop training!')
+            print(f'Models early stopping rate is higher than {self.esr}. Stop training, model would not be better')
             return True
-        if len(self.loss_list) > 1:
-            if min(self.loss_list[:-1]) < self.loss_list[-1]:
+        if len(self.loss_hist) > 1:
+            if min(self.loss_hist[:-1]) < self.loss_hist[-1]:
                 self.current_esr += 1
             else:
                 self.current_esr = 0

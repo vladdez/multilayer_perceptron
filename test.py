@@ -4,7 +4,7 @@ import pickle
 import argparse
 from utils.preproc_tools import StandardScaler, LabelEncoder, LabelMulticlassEncoder, load_model, load_csv, \
     my_round
-from utils.nn_tools import nn_f1_score, nn_accuracy_score, nn_precision_score, nn_recall_score
+from utils.nn_tools import f1_score, accuracy_score, precision_score, recall_score
 from optimization.losses import BinaryCrossEntropy
 
 
@@ -41,12 +41,12 @@ def main_test():
     pred_test = model.forward(X_test)
 
     print('Loss:', round(losser(y_test, pred_test), 2))
-    print('Accuracy:', round(nn_accuracy_score(y_test, my_round(pred_test)), 2))
-    print('F1:', round(nn_f1_score(my_round(y_test, activation=model.activation), \
+    print('Accuracy:', round(accuracy_score(y_test, my_round(pred_test)), 2))
+    print('F1:', round(f1_score(my_round(y_test, activation=model.activation), \
                                    my_round(pred_test, activation=model.activation)), 2))
-    print('Presicion:', round(nn_precision_score(my_round(y_test, activation=model.activation),
+    print('Presicion:', round(precision_score(my_round(y_test, activation=model.activation),
                                                  my_round(pred_test, activation=model.activation)), 4))
-    print('Recall:', round(nn_recall_score(my_round(y_test, activation=model.activation),
+    print('Recall:', round(recall_score(my_round(y_test, activation=model.activation),
                                            my_round(pred_test, activation=model.activation)), 4))
 
 if __name__ == '__main__':

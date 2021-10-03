@@ -36,25 +36,3 @@ class Dense(Layer):
         assert self.w_grad.shape == self.weights.shape and \
                self.b_grad.shape == self.biases.shape
         return grad_input
-
-
-class Dropout(Layer):
-    """
-    "Dropout:  A Simple Way to Prevent Neural Networks from Overfitting"
-    https://www.cs.toronto.edu/~hinton/absps/JMLRdropout.pdf
-    """
-
-    def __init__(self, p: float = 0.5):
-        super().__init__()
-        self.p = p
-        self.mask = None
-
-    def forward(self, input: np.ndarray, mode: str = 'train') -> np.ndarray:
-        if mode == 'train':
-            self.mask = np.random.binomial(1, self.p, input.shape) / self.p
-            return input * self.mask
-        else:
-            return input
-
-    def backward(self, input: np.ndarray, grad_output: np.ndarray) -> np.ndarray:
-        return grad_output * self.mask

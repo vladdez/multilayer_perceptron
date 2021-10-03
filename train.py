@@ -6,8 +6,7 @@ import random
 import os
 from utils.preproc_tools import StandardScaler, LabelEncoder, LabelMulticlassEncoder, save_model, load_csv, \
     check_best_model, drop_correlated, plot_curves, my_round
-from utils.nn_tools import split_to_train_val_test, split_to_train_val, init_weights, batcher, nn_f1_score, \
-    nn_accuracy_score, EarlyStopping
+from utils.nn_tools import split_to_train_val_test, split_to_train_val, init_weights, batcher, f1_score, EarlyStopping
 from module.activations import Sigmoid, ReLU, SoftMax
 from module.model import Model
 from module.layers import Dense
@@ -16,9 +15,9 @@ from optimization.losses import BinaryCrossEntropy, CrossEntropyLoss
 
 
 def seed_everything():
-    random.seed(42)
-    os.environ['PYTHONHASHSEED'] = str(42)
-    np.random.seed(42)
+    random.seed(21)
+    os.environ['PYTHONHASHSEED'] = str(21)
+    np.random.seed(21)
 
 
 def parse_args():
@@ -96,7 +95,7 @@ def main_train():
         for x_batch_train, y_batch_train in batcher(X_train, y_train, batchsize=int(args['batchsize']), shuffle=True):
             preds = model.forward(x_batch_train)
             loss = losser(y_batch_train, preds)
-            accuracy = nn_f1_score(my_round(y_batch_train, activation=model.activation),
+            accuracy = f1_score(my_round(y_batch_train, activation=model.activation),
                                    my_round(preds, activation=model.activation))
             train_loss_b.append(loss)
             train_acc_b.append(accuracy)
@@ -107,7 +106,7 @@ def main_train():
         for x_batch_val, y_batch_val in batcher(X_val, y_val, batchsize=int(args['batchsize']), shuffle=True):
             preds = model.forward(x_batch_val)
             loss = losser(y_batch_val, preds)
-            accuracy = nn_f1_score(my_round(y_batch_val, activation=model.activation),
+            accuracy = f1_score(my_round(y_batch_val, activation=model.activation),
                                    my_round(preds, activation=model.activation))
             val_loss_b.append(loss)
             val_acc_b.append(accuracy)

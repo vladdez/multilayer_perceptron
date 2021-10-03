@@ -59,13 +59,6 @@ class LabelEncoder:
             encoded[targets == i] = j
         return encoded
 
-    # def reverse_transform(self, encoded):
-    #     targets = np.zeros(encoded.shape, dtype=object)
-    #     for i, j in self.mapping.items():
-    #         targets[encoded == j] = i
-    #     return targets
-
-
 def save_model(model):
     with open('saved/model.pkl', 'wb') as file:
         pickle.dump(model, file)

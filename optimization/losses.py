@@ -43,8 +43,7 @@ class CrossEntropyLoss(Losser):
     def __call__(self, y_true, y_pred):
         output = np.clip(y_pred, self.eps, 1. - self.eps)
         output /= output.sum(axis=1)[:, np.newaxis]
-        loss = -(y_true * np.log(output)).sum(axis=1)
-        return np.mean(loss)
+        return np.mean(-(y_true * np.log(output)).sum(axis=1))
 
     def backward(self, model, y_true, y_pred):
         loss_grad = y_pred - y_true
