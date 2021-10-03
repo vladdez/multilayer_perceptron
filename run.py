@@ -9,6 +9,6 @@ if __name__ == '__main__':
         print('TRY', i)
 
 
-        os.system("python .\evaluation.py")
-        os.system("python .\/train.py  --dataset data_training.csv --activation sigmoid")
-        os.system("python .\/test.py  --dataset data_test.csv")
+        os.system("python3.9 evaluation.py")
+        os.system("python3.9 train.py  --dataset data_training.csv --activation sigmoid")
+        os.system("python3.9 test.py  --dataset data_test.csv")

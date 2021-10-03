@@ -15,10 +15,10 @@ from optimization.optimizers import SGD, Momentum, Adam
 from optimization.losses import BinaryCrossEntropy, CrossEntropyLoss
 
 
-def seed_everything(seed: int = 42) -> None:
-    random.seed(seed)
-    os.environ['PYTHONHASHSEED'] = str(seed)
-    np.random.seed(seed)
+def seed_everything():
+    random.seed(42)
+    os.environ['PYTHONHASHSEED'] = str(42)
+    np.random.seed(42)
 
 
 def parse_args():
@@ -135,12 +135,7 @@ def main_train():
     if args['plot']:
         plot_curves(train_loss, val_loss, "Loss")
         plot_curves(train_acc, val_acc, "F1")
-    if args['dataset'] == 'datasets/data.csv':
-        test_preds = my_round(model.forward(X_test).flatten())
-        test_f1 = nn_f1_score(y_test, test_preds)
-        print('Accuracy:', nn_accuracy_score(y_test, test_preds))
-        print('F1:', round(test_f1, 2))
-        print('Loss:', round(losser(y_test, test_preds), 2))
+
 
 
 if __name__ == '__main__':
